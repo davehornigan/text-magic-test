@@ -20,8 +20,8 @@ class Survey
     private Uuid $id;
 
     public function __construct(
-        #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
-        private readonly \DateTimeImmutable $createdOn = new \DateTimeImmutable()
+        #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
+        private \DateTimeImmutable $createdOn = new \DateTimeImmutable()
     ) {
         $this->id = new NilUuid();
     }

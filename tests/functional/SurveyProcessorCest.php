@@ -6,7 +6,7 @@ use App\Service\Survey\Entity\Survey;
 use App\Service\Survey\Entity\SurveyAnswer;
 use App\Service\Survey\Entity\SurveyQuestion;
 use App\Service\Survey\Enum\AnswerCondition;
-use App\Service\Survey\Repository\SurveyAnswerRepository;
+use App\Service\Survey\Repository\SurveyQuestionAnswerRepository;
 use App\Service\Survey\SurveyProcessor;
 use Codeception\Attribute\DataProvider;
 use Codeception\Example;
@@ -25,7 +25,8 @@ class SurveyProcessorCest
             'answerCondition' => AnswerCondition::AnyOf
         ]);
         $answerId = $I->haveInRepository(SurveyAnswer::class, [
-            $questionId => $example['selectedVariants']
+            'surveyId' => $surveyId,
+            'answers' => $answers = [(string)$questionId => $example['selectedVariants']]
         ]);
 
         /** @var SurveyProcessor $service */
@@ -33,7 +34,7 @@ class SurveyProcessorCest
 
         $result = $service->getResult($surveyId, $answerId);
 
-        $I->assertSame($example['expectedResult'], $result->answers[$questionId]->isCorrect);
+        $I->assertSame($example['expectedResult'], $result->answers[(string)$questionId]->isCorrect);
     }
 
     protected function getAnswers(): iterable

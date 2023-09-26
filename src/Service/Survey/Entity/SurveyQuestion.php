@@ -22,6 +22,8 @@ class SurveyQuestion
     private Uuid $id;
 
     public function __construct(
+        #[ORM\Column(type: UuidType::NAME, length: 36, nullable: false)]
+        private Uuid $surveyId,
         #[ORM\Column(type: Types::STRING, length: 240, nullable: false)]
         private string $title,
         #[ORM\Column(type: Types::JSON, nullable: false)]
@@ -30,8 +32,8 @@ class SurveyQuestion
         private array $correctVariants,
         #[ORM\Column(type: Types::STRING, nullable: false, enumType: AnswerCondition::class)]
         private AnswerCondition $answerCondition,
-        #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: false)]
-        private readonly \DateTimeImmutable $createdOn = new \DateTimeImmutable()
+        #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
+        private \DateTimeImmutable $createdOn = new \DateTimeImmutable()
     ) {
         $this->id = new NilUuid();
     }
@@ -39,6 +41,11 @@ class SurveyQuestion
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getSurveyId(): Uuid
+    {
+        return $this->surveyId;
     }
 
     public function getTitle(): string

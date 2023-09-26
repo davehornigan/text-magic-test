@@ -2,7 +2,7 @@
 
 namespace App\Service\Survey\Entity;
 
-use App\Service\Survey\Repository\SurveyAnswerRepository;
+use App\Service\Survey\Repository\SurveyQuestionAnswerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\NilUuid;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: SurveyAnswerRepository::class)]
+#[ORM\Entity(repositoryClass: SurveyQuestionAnswerRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class SurveyAnswer
 {
@@ -21,10 +21,12 @@ class SurveyAnswer
     private Uuid $id;
 
     public function __construct(
+        #[ORM\Column(type: UuidType::NAME, nullable: false)]
+        private Uuid $surveyId,
         #[ORM\Column(type: Types::JSON, nullable: false)]
         private array $answers,
         #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: false)]
-        private readonly \DateTimeImmutable $createdOn = new \DateTimeImmutable(),
+        private \DateTimeImmutable $createdOn = new \DateTimeImmutable(),
         #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
         private \DateTimeInterface $updatedOn = new \DateTime()
     ) {
@@ -34,6 +36,11 @@ class SurveyAnswer
     public function getId(): Uuid
     {
         return $this->id;
+    }
+
+    public function getSurveyId(): Uuid
+    {
+        return $this->surveyId;
     }
 
     public function getAnswers(): array

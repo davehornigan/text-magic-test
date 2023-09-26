@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /** @template-extends  EntityRepository<SurveyAnswer> */
-class SurveyAnswerRepository extends ServiceEntityRepository
+class SurveyQuestionAnswerRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

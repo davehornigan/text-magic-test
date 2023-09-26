@@ -2,7 +2,8 @@
 
 namespace App\Service\Survey;
 
-use App\Service\Survey\Repository\SurveyAnswerRepository;
+use App\Service\Survey\Enum\AnswerCondition;
+use App\Service\Survey\Repository\SurveyQuestionAnswerRepository;
 use App\Service\Survey\Repository\SurveyQuestionRepository;
 use App\Service\Survey\ValueObject\QuestionAnswerResult;
 use App\Service\Survey\ValueObject\SurveyQuestion;
@@ -12,7 +13,7 @@ class SurveyProcessor
 {
     public function __construct(
         public readonly SurveyQuestionRepository $questionRepository,
-        public readonly SurveyAnswerRepository $answerRepository,
+        public readonly SurveyQuestionAnswerRepository $answerRepository,
     ) {}
 
     public function getResult(string $surveyId, string $answerId): SurveyResult
@@ -29,14 +30,13 @@ class SurveyProcessor
                 $question->getAnswerCondition()
             );
         }
-        $answersData = $this->answerRepository->findBy(['surveyId' => $surveyId, 'answerId' => $answerId]);
+        $answersData = $this->answerRepository->find($answerId);
         $answers = [];
-        foreach ($answersData as $answer) {
-            $questionId = $answer->getQuestionId();
+        foreach ($answersData->getAnswers() as $questionId => $questionAnswers) {
             $answers[$questionId] = new QuestionAnswerResult(
                 $questionId,
-                $answer->getSelectedVariants(),
-                $this->isCorrectAnswer($questions[$questionId], $answer->getSelectedVariants())
+                $questionAnswers,
+                $this->isCorrectAnswer($questions[$questionId], $questionAnswers)
             );
         }
 
@@ -45,6 +45,15 @@ class SurveyProcessor
 
     private function isCorrectAnswer(SurveyQuestion $question, array $selectedVariants): bool
     {
-        return false;
+        if ($question->answerCondition === AnswerCondition::AllOf) {
+            return $selectedVariants === $question->correctVariants;
+        }
+
+        foreach ($selectedVariants as $selectedVariant) {
+            if (false === in_array($selectedVariant, $question->correctVariants)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
