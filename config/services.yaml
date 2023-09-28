@@ -24,6 +24,8 @@ services:
     Symfony\Component\Uid\Command\GenerateUuidCommand: ~
     Symfony\Component\Uid\Command\InspectUuidCommand: ~
 
+    App\Service\Survey\Survey:
+        public: true
     App\Service\Survey\SurveyProcessor:
         public: true
     # add more service definitions when explicit configuration is needed
