@@ -21,6 +21,10 @@ services:
             - '../src/Service/*/Entity/'
             - '../src/Kernel.php'
 
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
+
     Symfony\Component\Uid\Command\GenerateUuidCommand: ~
     Symfony\Component\Uid\Command\InspectUuidCommand: ~
 

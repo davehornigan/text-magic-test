@@ -5,6 +5,17 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
+            <style>
+            div#form > div > label {
+                display: block;
+                width: 20rem;
+            }
+            div#form > div > div {
+                display: block;
+                width: 20rem;
+                margin-bottom: 1rem;
+            }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
@@ -12,7 +23,7 @@
     </head>
     <body>
         {% block body %}
-
+            {{ form(form) }}
         {% endblock %}
     </body>
 </html>
