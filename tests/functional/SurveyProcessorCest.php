@@ -10,6 +10,7 @@ use App\Service\Survey\Repository\SurveyQuestionAnswerRepository;
 use App\Service\Survey\SurveyProcessor;
 use Codeception\Attribute\DataProvider;
 use Codeception\Example;
+use Symfony\Component\Uid\Uuid;
 
 class SurveyProcessorCest
 {
@@ -20,13 +21,19 @@ class SurveyProcessorCest
         $questionId = $I->haveInRepository(SurveyQuestion::class, [
             'surveyId' => $surveyId,
             'title' => '2 + 2 = ?',
-            'variants' => ['4', '3 + 1', '1 + 1', '5'],
-            'correctVariants' => [0, 1],
+            'variants' => [
+                'item1' => '4',
+                'item2' => '3 + 1',
+                'item3' => '1 + 1',
+                'item4' => '5'
+            ],
+            'correctVariants' => ['item1', 'item2'],
             'answerCondition' => AnswerCondition::AnyOf
         ]);
         $answerId = $I->haveInRepository(SurveyAnswer::class, [
+            'id' => Uuid::v4(),
             'surveyId' => $surveyId,
-            'answers' => $answers = [(string)$questionId => $example['selectedVariants']]
+            'answers' => [(string)$questionId => $example['selectedVariants']]
         ]);
 
         /** @var SurveyProcessor $service */
@@ -39,11 +46,11 @@ class SurveyProcessorCest
 
     protected function getAnswers(): iterable
     {
-        yield ['selectedVariants' => [0], 'expectedResult' => true];
-        yield ['selectedVariants' => [1], 'expectedResult' => true];
-        yield ['selectedVariants' => [0, 1], 'expectedResult' => true];
-        yield ['selectedVariants' => [0, 2], 'expectedResult' => false];
-        yield ['selectedVariants' => [2, 3], 'expectedResult' => false];
-        yield ['selectedVariants' => [3], 'expectedResult' => false];
+        yield ['selectedVariants' => ['item1'], 'expectedResult' => true];
+        yield ['selectedVariants' => ['item2'], 'expectedResult' => true];
+        yield ['selectedVariants' => ['item1', 'item2'], 'expectedResult' => true];
+        yield ['selectedVariants' => ['item1', 'item3'], 'expectedResult' => false];
+        yield ['selectedVariants' => ['item3', 'item4'], 'expectedResult' => false];
+        yield ['selectedVariants' => ['item4'], 'expectedResult' => false];
     }
 }

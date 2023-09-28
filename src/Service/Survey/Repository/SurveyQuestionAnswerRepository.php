@@ -14,4 +14,11 @@ class SurveyQuestionAnswerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, SurveyAnswer::class);
     }
+
+    public function save(SurveyAnswer $entity): void
+    {
+        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->refresh($entity);
+    }
 }

@@ -14,13 +14,12 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\HasLifecycleCallbacks]
 class SurveyAnswer
 {
-    #[ORM\Id]
-    #[ORM\Column(type: UuidType::NAME, unique: true)]
-    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
-    #[ORM\CustomIdGenerator(class: UuidGenerator::class)]
-    private Uuid $id;
 
     public function __construct(
+        #[ORM\Id]
+        #[ORM\Column(type: UuidType::NAME, unique: true)]
+        #[ORM\GeneratedValue(strategy: 'NONE')]
+        private Uuid $id,
         #[ORM\Column(type: UuidType::NAME, nullable: false)]
         private Uuid $surveyId,
         #[ORM\Column(type: Types::JSON, nullable: false)]
@@ -29,9 +28,7 @@ class SurveyAnswer
         private \DateTimeImmutable $createdOn = new \DateTimeImmutable(),
         #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: false)]
         private \DateTimeInterface $updatedOn = new \DateTime()
-    ) {
-        $this->id = new NilUuid();
-    }
+    ) {}
 
     public function getId(): Uuid
     {
@@ -46,6 +43,13 @@ class SurveyAnswer
     public function getAnswers(): array
     {
         return $this->answers;
+    }
+
+    public function fillAnswers(array $answers): static
+    {
+        $this->answers = $answers;
+
+        return $this;
     }
 
     public function getCreatedOn(): \DateTimeImmutable
