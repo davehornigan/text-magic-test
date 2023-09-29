@@ -11,3 +11,5 @@ browser http://localhost/survey/ID_FROM_PREVIOUS_COMMAND_RESULT
 ```shell
 docker compose exec -it php /var/www/vendor/bin/codecept run -c /var/www/codeception.yml
 ```
+
+P.S. Questions and answers can be shuffled without disrupting the logic of the survey, but this is not implemented.
