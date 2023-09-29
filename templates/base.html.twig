@@ -15,6 +15,12 @@
                 width: 20rem;
                 margin-bottom: 1rem;
             }
+            .green {
+                color: green;
+            }
+            .red {
+                color: red;
+            }
             </style>
         {% endblock %}
 
@@ -23,7 +29,15 @@
     </head>
     <body>
         {% block body %}
-            {{ form(form) }}
+            {% if form is defined %}
+                {{ form(form) }}
+            {% endif %}
+            {% if results is defined %}
+                {% for answer in results.answers %}
+                    <p>Question: {{ results.questions[answer.questionId].questionTitle }}</p>
+                    {% if answer.isCorrect %}<p class="green">{% else %}<p class="red">{% endif %}Answer: {{ answer.answers|join(', ') }}</p>
+                {% endfor %}
+            {% endif %}
         {% endblock %}
     </body>
 </html>

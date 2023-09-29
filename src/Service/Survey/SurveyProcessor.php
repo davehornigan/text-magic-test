@@ -17,9 +17,9 @@ class SurveyProcessor
         public readonly SurveyQuestionAnswerRepository $answerRepository,
     ) {}
 
-    public function fillSurvey(string $surveyId, string $answerId, array $answers): void
+    public function fillSurvey(string $surveyId, ?string $answerId, array $answers): void
     {
-        $answersData = $this->answerRepository->find($answerId);
+        $answersData = $answerId !== null ? $this->answerRepository->find($answerId) : null;
         if ($answersData === null) {
             $answersData = new SurveyAnswer(Uuid::fromString($answerId), Uuid::fromString($surveyId), []);
         }
